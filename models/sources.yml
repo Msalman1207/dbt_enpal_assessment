@@ -1,8 +1,79 @@
 version: 2
 
 sources:
-  - name: postgres_public
+  - name: pipedrive_raw
+    description: Raw Pipedrive CRM data loaded from CSV files
     database: postgres
     schema: public
     tables:
+      - name: deal_changes
+        description: Historical record of all changes made to deals
+        columns:
+          - name: deal_id
+            description: Unique deal identifier
+          - name: change_time
+            description: When the change was recorded
+          - name: changed_field_key
+            description: Field that was changed (add_time, user_id, stage_id, lost_reason)
+          - name: new_value
+            description: New value of the changed field
+
       - name: activity
+        description: Activities (calls, meetings, etc.) associated with deals
+        columns:
+          - name: activity_id
+            description: Unique activity identifier
+          - name: type
+            description: Activity type (follow_up, sc_2, meeting, etc.)
+          - name: assigned_to_user
+            description: User ID who is assigned to the activity
+          - name: deal_id
+            description: Associated deal ID
+          - name: done
+            description: Whether activity is completed
+          - name: due_to
+            description: When the activity is due
+
+      - name: stages
+        description: Pipeline stage definitions for the sales funnel
+        columns:
+          - name: stage_id
+            description: Unique stage identifier
+          - name: stage_name
+            description: Name of the sales funnel stage
+
+      - name: activity_types
+        description: Reference table for activity types
+        columns:
+          - name: id
+            description: Unique activity type identifier
+          - name: name
+            description: Name of the activity type
+          - name: active
+            description: Whether this activity type is active
+          - name: type
+            description: Category of the activity type
+
+      - name: users
+        description: Sales team members who manage deals
+        columns:
+          - name: id
+            description: Unique user identifier
+          - name: name
+            description: User's full name
+          - name: email
+            description: User's email address
+          - name: modified
+            description: When the user record was last modified
+
+      - name: fields
+        description: Custom field definitions for deals
+        columns:
+          - name: id
+            description: Unique field identifier
+          - name: field_key
+            description: Field key/code
+          - name: name
+            description: Field display name
+          - name: field_value_options
+            description: Available options for this field (as JSON)
